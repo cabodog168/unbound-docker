@@ -103,6 +103,9 @@ RUN set -xe; \
   
 COPY ./unbound/root/*.sh \
   /usr/local/unbound/sbin/
+
+COPY ./exporter/bin/unbound_exporter \
+  /usr/local/unbound/unbound.d/sbin/
    
 RUN set -xe; \
     apk --update --no-cache add \
@@ -190,7 +193,7 @@ COPY --from=buildenv /usr/share/zoneinfo/ \
 
 WORKDIR /
 
-FROM scratch as unbound
+FROM alpine:latest as unbound
 
 ARG UNBOUND_VERSION \
   IMAGE_BUILD_DATE \
@@ -216,6 +219,9 @@ LABEL org.opencontainers.image.title="madnuttah/unbound" \
   org.opencontainers.image.licenses="MIT"
 
 COPY --from=stage /app/ /
+
+RUN mkdir /run/unbound
+RUN chmod 1777 /run/unbound
 
 USER "${UNBOUND_UID}"
 
