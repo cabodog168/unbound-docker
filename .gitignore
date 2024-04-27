@@ -2,3 +2,4 @@
 .dockerignore
 LICENSE
 *.md
+.vscode/settings.json
